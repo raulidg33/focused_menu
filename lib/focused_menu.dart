@@ -20,12 +20,15 @@ class FocusedMenuHolder extends StatefulWidget {
   final Function? onActivated;
   final bool openWithTap;
   final bool openWithForcePress;
-
+  final bool animateMenuOnShow;
+  final Duration menuAnimationDuration;
   const FocusedMenuHolder({
     Key? key,
     required this.child,
     required this.onPressed,
     required this.menuItems,
+    this.animateMenuOnShow = true,
+    this.menuAnimationDuration = const Duration(milliseconds: 0),
     this.onActivated,
     this.duration,
     this.menuBoxDecoration,
@@ -101,6 +104,8 @@ class _FocusedMenuHolderState extends State<FocusedMenuHolder> {
               return FadeTransition(
                   opacity: animation,
                   child: FocusedMenuDetails(
+                    menuAnimationDuration: widget.menuAnimationDuration,
+                    animateMenuOnShow: widget.animateMenuOnShow,
                     itemExtent: widget.menuItemExtent,
                     menuBoxDecoration: widget.menuBoxDecoration,
                     child: widget.child,
@@ -121,6 +126,8 @@ class _FocusedMenuHolderState extends State<FocusedMenuHolder> {
 }
 
 class FocusedMenuDetails extends StatelessWidget {
+  final Duration menuAnimationDuration;
+  final bool animateMenuOnShow;
   final List<FocusedMenuItem> menuItems;
   final BoxDecoration? menuBoxDecoration;
   final Offset childOffset;
@@ -136,6 +143,8 @@ class FocusedMenuDetails extends StatelessWidget {
 
   const FocusedMenuDetails(
       {Key? key,
+      required this.animateMenuOnShow,
+      required this.menuAnimationDuration,
       required this.menuItems,
       required this.child,
       required this.childOffset,
@@ -183,7 +192,7 @@ class FocusedMenuDetails extends StatelessWidget {
               top: topOffset,
               left: leftOffset,
               child: TweenAnimationBuilder(
-                duration: Duration(milliseconds: 200),
+                duration: animateMenuOnShow ? menuAnimationDuration : Duration(milliseconds: 0),
                 builder: (BuildContext context, dynamic value, Widget? child) {
                   return Transform.scale(
                     scale: value,
