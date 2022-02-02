@@ -17,8 +17,7 @@ class FocusedMenuHolder extends StatefulWidget {
   final Color? blurBackgroundColor;
   final double? bottomOffsetHeight;
   final double? menuOffset;
-
-  /// Open with tap insted of long press.
+  final Function? onActivated;
   final bool openWithTap;
   final bool openWithForcePress;
 
@@ -27,6 +26,7 @@ class FocusedMenuHolder extends StatefulWidget {
     required this.child,
     required this.onPressed,
     required this.menuItems,
+    this.onActivated,
     this.duration,
     this.menuBoxDecoration,
     this.menuItemExtent,
@@ -64,18 +64,26 @@ class _FocusedMenuHolderState extends State<FocusedMenuHolder> {
     return GestureDetector(
         key: containerKey,
         onTap: () async {
-          widget.onPressed();
           if (widget.openWithTap) {
+            if (widget.onActivated != null) {
+              widget.onActivated!();
+            }
             await openMenu(context);
           }
         },
         onLongPress: () async {
           if (!widget.openWithTap) {
+            if (widget.onActivated != null) {
+              widget.onActivated!();
+            }
             await openMenu(context);
           }
         },
         onForcePressPeak: (details) async {
           if (!widget.openWithTap && widget.openWithForcePress) {
+            if (widget.onActivated != null) {
+              widget.onActivated!();
+            }
             await openMenu(context);
           }
         },
